@@ -76,7 +76,7 @@ class Learning:
         # Choose algorithm
         # alg = 'reinforce'
         algorithm = self.algorithms[self.alg]
-        for episode in range(500):
+        for episode in range(700):
             state = self.env.reset()
             print('Episode', episode)
             if self.alg == 'sarsa':

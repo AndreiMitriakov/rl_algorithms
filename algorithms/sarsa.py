@@ -34,6 +34,12 @@ class SARSA:
         Q_sa = probs_[a_]
         actor.optimizer.zero_grad()
         error = self.alpha * (r + self.gamma * Q_sa - Qsa)
+        # L1 regularization
+        # reg_loss = 0
+        # for param in actor.parameters():
+        #     reg_loss += torch.sum(torch.abs(param))
+
+        # factor = 1e-4
 
         loss = self.huber_loss(error)
         loss.backward(retain_graph=True)
