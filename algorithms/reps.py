@@ -64,6 +64,12 @@ class REPS:
         critic.optimizer.step(closure)
         return critic
 
+    def huber_loss(self, error):
+        if float(error) <= 1.:
+            return 0.5*error**2
+        else:
+            return abs(error)-0.5
+
     def get_loss_actor(self, samples, actor, critic):
         '''
         Calc. loss function for the actor according to the formula
@@ -97,6 +103,9 @@ class REPS:
         self.loss_actor.append(float(loss))
         print('loss actor', float(loss), 'reward', float(self.reward[-1]))
         print('########')
+
+        print('critic weights', torch.sum(critic.linear1.weight.data.view(-1))+torch.sum(critic.linear2.weight.data.view(-1)))
+        print('actor weights', torch.sum(actor.linear1.weight.data.view(-1))+torch.sum(actor.linear2.weight.data.view(-1)))
         return actor, critic
 
 

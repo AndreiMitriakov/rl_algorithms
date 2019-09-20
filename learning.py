@@ -10,6 +10,7 @@ from gym import spaces
 from gym.utils import seeding
 from actors.common_actor import PolicyNetWork
 from actors.actor_sarsa import QNetWork
+from actors.actor_reps import PolicyREPS
 from critics.common_critic import ValueNetWork
 from algorithms.reinforce import REINFORCE
 from algorithms.reps import REPS
@@ -24,15 +25,17 @@ class Learning:
 
     def __init__(self):
         self.env = gym.make('CartPole-v0')
-        self.alg = 'sarsa'
+        self.alg = 'reps'
         self.algorithms = {
             'reps': REPS(),
             'reinforce': REINFORCE(),
             'sarsa': SARSA()
         }
         print(self.alg)
-        if self.alg == 'reps' or self.alg == 'reinforce':
+        if self.alg == 'reinforce':
             self.actor = PolicyNetWork(self.env.observation_space.shape[0], self.env.action_space.n, 96)
+        elif self.alg == 'reps':
+            self.actor = PolicyREPS(self.env.observation_space.shape[0], self.env.action_space.n, 96)
         elif self.alg == 'sarsa':
             self.actor = QNetWork(self.env.observation_space.shape[0]+1, 2, 96)
 
@@ -76,7 +79,7 @@ class Learning:
         # Choose algorithm
         # alg = 'reinforce'
         algorithm = self.algorithms[self.alg]
-        for episode in range(700):
+        for episode in range(170):
             state = self.env.reset()
             print('Episode', episode)
             if self.alg == 'sarsa':

@@ -11,7 +11,7 @@ from torchviz import make_dot
 
 
 class ValueNetWork(nn.Module):
-    def __init__(self, num_inputs, num_actions, hidden_size, learning_rate=0.0001): # 3e-4
+    def __init__(self, num_inputs, num_actions, hidden_size, learning_rate=5e-2): # 3e-4
         super(ValueNetWork, self).__init__()
         self.num_actions = num_actions
         eta = 1.
@@ -24,7 +24,7 @@ class ValueNetWork(nn.Module):
         torch.nn.init.ones_(self.linear2.weight)
 
         self.dropout = nn.Dropout()
-        self.optimizer = optim.Adam(self.parameters(), lr=learning_rate)
+        self.optimizer = optim.Adam(self.parameters(), lr=learning_rate)# , weight_decay=5e-4)
         self.optimizer_eta = torch.optim.Adam([self.eta], lr=learning_rate*100)
 
     def forward(self, state):

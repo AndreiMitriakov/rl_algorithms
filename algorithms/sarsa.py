@@ -18,8 +18,6 @@ class SARSA:
         self.r = 0
         self.gamma = 1.
         self.alpha = 1.
-        self.lambda1 = 0.5
-
 
     def huber_loss(self, error):
         if float(error) <= 1.:
@@ -34,14 +32,14 @@ class SARSA:
         Q_sa = probs_[a_]
         actor.optimizer.zero_grad()
         error = self.alpha * (r + self.gamma * Q_sa - Qsa)
+
         # L1 regularization
-        # reg_loss = 0
-        # for param in actor.parameters():
-        #     reg_loss += torch.sum(torch.abs(param))
+        reg_loss = 0
+        for param in actor.parameters():
+            reg_loss += torch.sum(torch.abs(param))
+        factor = 5e-5
 
-        # factor = 1e-4
-
-        loss = self.huber_loss(error)
+        loss = self.huber_loss(error) + factor * reg_loss
         loss.backward(retain_graph=True)
         actor.optimizer.step()
         self.r += 1

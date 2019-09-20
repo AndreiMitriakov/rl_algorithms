@@ -11,19 +11,19 @@ from torchviz import make_dot
 
 
 class QNetWork(nn.Module):
-    def __init__(self, num_inputs, num_actions, hidden_size, learning_rate=5e-3): # 3e-3 - 5e-3 are optimal
+    def __init__(self, num_inputs, num_actions, hidden_size, learning_rate=1e-3): # 3e-3 - 5e-3 are optimal
         super(QNetWork, self).__init__()
         self.num_actions = num_actions
         self.linear1 = nn.Linear(num_inputs, hidden_size)
-        # torch.nn.init.zeros_(self.linear1.weight)
+        torch.nn.init.xavier_uniform_(self.linear1.weight)
         self.linear2 = nn.Linear(hidden_size, 1)
-        # torch.nn.init.zeros_(self.linear2.weight)
+        torch.nn.init.xavier_uniform_(self.linear2.weight)
         self.dropout = nn.Dropout()
-        self.eps = [0.5, 0.4, 0.3, 0.2, 0.1, 0.05, 0.01]
-        self.epsilon = self.eps[0]
+        self.eps = [0.5, 0.4, 0.3, 0.2, 0.1, 0.03, 0.01, 0.001]
+        self.epsilon = .2
         self.cnt = 0
         self.criterion = torch.nn.MSELoss()
-        self.optimizer = optim.Adam(self.parameters(), lr=learning_rate, weight_decay=5e-4)
+        self.optimizer = optim.Adam(self.parameters(), lr=learning_rate, weight_decay=5e-5)
 
     def forward(self, state):
         state = torch.from_numpy(state).float()
@@ -47,14 +47,14 @@ class QNetWork(nn.Module):
         return action, probs
 
     def decrease_epsilon(self):
+        if self.epsilon > 0.001:
+           self.epsilon *= 0.999
+        pass
         self.cnt += 1.
-        step = 20
+        step = 30
         if self.cnt % step == 0:
             j = int(self.cnt / step)
             if j < len(self.eps):
                 self.epsilon = self.eps[j]
             else:
                 self.epsilon = self.eps[-1]
-
-        # if self.epsilon > 0.01:
-        #     self.epsilon *= 0.99
