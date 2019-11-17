@@ -1,2 +1,2 @@
-# rl_algorithms
-Custom implementation of SARSA, Reinforce and REPS.
+# Custom RL algorithms
+Implementation of SARSA, Reinforce and REPS.
